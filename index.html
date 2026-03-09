@@ -2,1683 +2,617 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>成型模具陣列計算表</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f0f4f5;
-  --card: #ffffff;
-  --border: #dce6e9;
-  --accent: #0a7e6e;
-  --accent-light: #e0f4f1;
-  --accent2: #d45f1e;
-  --text: #1a2b30;
-  --sub: #6b8590;
-  --warn-bg: #fff2ee;
-  --warn: #c0390e;
-  --ok-bg: #e6f7f4;
-  --ok: #0a7e6e;
-  --mono: 'DM Mono', monospace;
-  --sans: 'Noto Sans TC', sans-serif;
-  --radius: 12px;
-  --shadow: 0 2px 12px rgba(10,50,60,0.08);
+  --bg:#f0f4f5; --card:#fff; --border:#dce6e9;
+  --accent:#0a7e6e; --accent-light:#e0f4f1; --accent2:#d45f1e;
+  --text:#1a2b30; --sub:#6b8590;
+  --warn-bg:#fff2ee; --warn:#c0390e;
+  --ok-bg:#e6f7f4; --ok:#0a7e6e;
+  --mono:'DM Mono',monospace; --sans:'Noto Sans TC',sans-serif;
+  --r:12px; --shadow:0 2px 12px rgba(10,50,60,.08);
+  --side:320px; --gap:20px;
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-body {
-  font-family: var(--sans);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  padding-bottom: 40px;
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
 
 /* ── Header ── */
-.header {
-  background: var(--accent);
-  padding: 20px 20px 52px;
-  position: relative;
-  overflow: hidden;
-}
-.header::after {
-  content: '';
-  position: absolute;
-  bottom: -28px; left: 0; right: 0;
-  height: 56px;
-  background: var(--bg);
-  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-}
-.header-badge {
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.14em;
-  color: rgba(255,255,255,0.6);
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 100px;
-  padding: 3px 10px;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-}
-.header h1 {
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.3;
-  letter-spacing: 0.01em;
-}
-.header p {
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.65);
-  margin-top: 4px;
-  font-weight: 300;
-}
+.hdr{background:var(--accent);padding:22px 20px 58px;position:relative;overflow:hidden}
+.hdr::after{content:'';position:absolute;bottom:-28px;left:0;right:0;height:56px;background:var(--bg);border-radius:50% 50% 0 0/100% 100% 0 0}
+.hdr-inner{max-width:1200px;margin:0 auto}
+.hdr-badge{display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;color:rgba(255,255,255,.6);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:3px 10px;margin-bottom:10px;text-transform:uppercase}
+.hdr h1{font-size:1.5rem;font-weight:700;color:#fff;line-height:1.25}
+.hdr p{font-size:.78rem;color:rgba(255,255,255,.6);margin-top:5px;font-weight:300}
 
-/* ── Main Content ── */
-.content {
-  padding: 0 16px;
-  margin-top: -4px;
-  max-width: 520px;
-  margin-left: auto;
-  margin-right: auto;
+/* ── Page Grid ── */
+.page{max-width:1200px;margin:0 auto;padding:0 16px 48px}
+@media(min-width:840px){
+  .page{display:grid;grid-template-columns:var(--side) 1fr;column-gap:var(--gap);align-items:start}
+  .col-l{grid-column:1}.col-r{grid-column:2}
 }
 
 /* ── Card ── */
-.card {
-  background: var(--card);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-  margin-bottom: 16px;
-  overflow: hidden;
-  animation: slideUp 0.4s ease both;
-}
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.card:nth-child(1) { animation-delay: 0.05s; }
-.card:nth-child(2) { animation-delay: 0.12s; }
-.card:nth-child(3) { animation-delay: 0.19s; }
-.card:nth-child(4) { animation-delay: 0.26s; }
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:16px;overflow:hidden;animation:up .35s ease both}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.card:nth-child(1){animation-delay:.04s}.card:nth-child(2){animation-delay:.09s}
+.card:nth-child(3){animation-delay:.14s}.card:nth-child(4){animation-delay:.19s}
+.card:nth-child(5){animation-delay:.24s}.card:nth-child(6){animation-delay:.29s}
+.card-head{padding:14px 16px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.card-icon{width:34px;height:34px;border-radius:9px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0}
+.card-title{font-size:.9rem;font-weight:700;color:var(--text);letter-spacing:.02em}
+.card-sub{font-size:.7rem;color:var(--sub);margin-top:2px}
+.card-body{padding:16px}
 
-.card-head {
-  padding: 14px 16px 12px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.card-icon {
-  width: 32px; height: 32px;
-  border-radius: 8px;
-  background: var(--accent-light);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
-  flex-shrink: 0;
-}
-.card-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0.02em;
-}
-.card-sub {
-  font-size: 0.68rem;
-  color: var(--sub);
-  margin-top: 1px;
-}
+/* ── Inputs ── */
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:.7rem;font-weight:500;color:var(--sub);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iw{display:flex;align-items:center;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color .2s,box-shadow .2s;width:100%}
+.iw:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(10,126,110,.12)}
+.iw input{flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:var(--mono);font-size:1rem;color:var(--text);padding:11px 6px 11px 10px}
+.iw input::-webkit-outer-spin-button,.iw input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.iw input[type=number]{-moz-appearance:textfield}
+.iw .unit{flex-shrink:0;padding:0 9px 0 2px;font-family:var(--mono);font-size:.7rem;color:var(--sub);white-space:nowrap}
+.pair{display:flex;align-items:flex-end;gap:0;width:100%}
+.pair .field{flex:1;min-width:0}
+.sep{flex-shrink:0;width:34px;text-align:center;font-family:var(--mono);font-size:1rem;color:var(--sub);padding-bottom:11px;line-height:1}
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tag{display:inline-block;font-size:.55rem;background:var(--accent);color:#fff;border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:middle;letter-spacing:.04em}
+.tag.m{background:var(--accent2)}
+.lock{flex-shrink:0;border:none;background:transparent;font-size:.9rem;padding:0 6px 0 2px;cursor:pointer;line-height:1;opacity:.55;transition:opacity .15s}
+.lock:active{opacity:1}.lock.on{opacity:1}
+.slabel{font-family:var(--mono);font-size:.65rem;color:var(--sub);letter-spacing:.06em;margin-bottom:6px}
 
-.card-body { padding: 16px; }
+/* ── Mode Toggle ── */
+.mtog{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:14px}
+.mbtn{flex:1;padding:10px 6px;border:none;background:transparent;font-family:var(--mono);font-size:.7rem;color:var(--sub);cursor:pointer;transition:all .18s;letter-spacing:.03em;line-height:1.4;text-align:center}
+.mbtn strong{display:block;font-size:.8rem;margin-bottom:1px}
+.mbtn.on{background:var(--accent);color:#fff}
+.mbtn:not(.on):active{background:var(--border)}
+.mdiv{width:1px;background:var(--border);flex-shrink:0}
+.msec{display:none}.msec.on{display:block}
+.ahint{display:flex;align-items:center;justify-content:space-between;background:var(--accent-light);border:1px solid rgba(10,126,110,.25);border-radius:7px;padding:8px 12px;font-size:.73rem;color:var(--accent);margin-bottom:10px;font-family:var(--mono)}
+.ubtn{border:1px solid rgba(10,126,110,.4);background:transparent;color:var(--accent);font-size:.68rem;font-family:var(--mono);border-radius:5px;padding:3px 8px;cursor:pointer;white-space:nowrap}
 
-/* ── Input Grid ── */
-.input-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-.input-grid.single { grid-template-columns: 1fr; }
-.input-grid.triple { grid-template-columns: 1fr 1fr 1fr; }
+/* ── Machine Tabs ── */
+.mtabs{display:flex;gap:8px;margin-bottom:14px}
+.mtab{flex:1;min-width:0;padding:10px 8px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-family:var(--sans);font-size:.73rem;font-weight:500;color:var(--sub);cursor:pointer;text-align:center;line-height:1.35;transition:all .18s}
+.mtab strong{display:block;font-size:.8rem;color:var(--text);margin-bottom:2px}
+.mtab.on{background:var(--accent-light);border-color:var(--accent);color:var(--accent)}
+.mtab.on strong{color:var(--accent)}
 
-/* 並排雙欄（長×寬、行×欄）專用 */
-.pair-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 0;
-  width: 100%;
-}
-.pair-row .field {
-  flex: 1;
-  min-width: 0;
-}
-.pair-sep {
-  flex-shrink: 0;
-  width: 32px;
-  text-align: center;
-  font-family: var(--mono);
-  font-size: 1rem;
-  color: var(--sub);
-  padding-bottom: 11px;
-  line-height: 1;
-}
+/* ── Spec Accordion ── */
+.spanel{background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.sphead{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:var(--accent);cursor:pointer;user-select:none}
+.sptitle{font-family:var(--mono);font-size:.72rem;font-weight:500;color:#fff;letter-spacing:.06em;text-transform:uppercase}
+.sparr{font-size:.75rem;color:rgba(255,255,255,.7);transition:transform .25s}
+.sparr.on{transform:rotate(180deg)}
+.spbody{display:none;padding:12px}.spbody.on{display:block}
+.stbl{width:100%;border-collapse:collapse;font-size:.76rem}
+.stbl tr{border-bottom:1px solid var(--border)}.stbl tr:last-child{border-bottom:none}
+.stbl td{padding:7px 6px;vertical-align:top;line-height:1.5}
+.stbl td:first-child{color:var(--sub);font-family:var(--mono);font-size:.7rem;white-space:nowrap;width:42%}
+.stbl td:last-child{color:var(--text);font-weight:500}
+.sv{font-family:var(--mono);color:var(--accent)}
 
-.field { display: flex; flex-direction: column; gap: 5px; }
+/* ── Preset Buttons ── */
+.prow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.pbtn{flex:1;min-width:0;padding:9px 6px;background:var(--bg);border:1.5px solid var(--border);border-radius:7px;font-family:var(--mono);font-size:.7rem;color:var(--sub);cursor:pointer;text-align:center;line-height:1.4;transition:all .15s}
+.pbtn:active,.pbtn.on{background:var(--accent-light);border-color:var(--accent);color:var(--accent)}
+.pbtn strong{display:block;font-size:.76rem;color:var(--text);margin-bottom:1px}
 
-.field label {
-  font-size: 0.68rem;
-  font-weight: 500;
-  color: var(--sub);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+/* ── Chips ── */
+.chips{display:flex;flex-direction:column;gap:5px;margin-top:10px}
+.chip{display:flex;align-items:flex-start;gap:7px;padding:8px 11px;border-radius:7px;font-size:.73rem;font-family:var(--mono);line-height:1.5}
+.chip.ok{background:var(--ok-bg);color:var(--ok);border:1px solid rgba(10,126,110,.2)}
+.chip.ng{background:var(--warn-bg);color:var(--warn);border:1px solid rgba(192,57,14,.2)}
+.chip.na{background:var(--bg);color:var(--sub);border:1px solid var(--border)}
+.chip .ci{font-size:.85rem;flex-shrink:0;margin-top:1px}
 
-.input-wrap {
-  display: flex;
-  align-items: center;
-  background: var(--bg);
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  width: 100%;
-}
-.input-wrap:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(10,126,110,0.12);
-}
+/* ── Result Dim Cells ── */
+.rdg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.rdc{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:13px 13px 11px;transition:border-color .3s,background .3s}
+.rdc.ok{border-color:rgba(10,126,110,.4);background:var(--ok-bg)}
+.rdc.ng{border-color:rgba(192,57,14,.4);background:var(--warn-bg)}
+.rdlb{font-size:.65rem;font-weight:500;color:var(--sub);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}
+.rdv{font-family:var(--mono);font-size:1.6rem;font-weight:500;color:var(--text);line-height:1;transition:color .3s}
+.rdc.ok .rdv{color:var(--accent)}.rdc.ng .rdv{color:var(--warn)}
+.rdu{font-family:var(--mono);font-size:.63rem;color:var(--sub);margin-top:2px;margin-bottom:7px}
+.rdr{font-family:var(--mono);font-size:.62rem;color:var(--sub);margin-bottom:6px}
+.rbw{height:4px;background:rgba(0,0,0,.07);border-radius:2px;overflow:hidden}
+.rb{height:100%;border-radius:2px;background:var(--accent);width:0%;transition:width .5s cubic-bezier(.4,0,.2,1),background .3s}
+.rdc.ng .rb{background:var(--warn)}
 
-.input-wrap input {
-  flex: 1;
-  min-width: 0;
-  width: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-family: var(--mono);
-  font-size: 1rem;
-  color: var(--text);
-  padding: 11px 6px 11px 10px;
-}
-/* 隱藏 number 上下箭頭，避免佔用寬度 */
-.input-wrap input::-webkit-outer-spin-button,
-.input-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.input-wrap input[type=number] { -moz-appearance: textfield; }
+/* ── Result N / Util ── */
+.rg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.rc{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:13px 13px 11px;text-align:center;transition:all .3s}
+.rc.hi{background:var(--accent-light);border-color:rgba(10,126,110,.3)}
+.rclb{font-size:.65rem;font-weight:500;color:var(--sub);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.rcv{font-family:var(--mono);font-size:1.6rem;font-weight:500;color:var(--text);line-height:1;transition:color .3s}
+.rcv .usm{font-size:.68rem;color:var(--sub);margin-left:2px}
+.rc.hi .rcv{color:var(--accent)}
 
-.input-wrap .unit {
-  flex-shrink: 0;
-  padding: 0 8px 0 2px;
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--sub);
-  white-space: nowrap;
-}
+/* ── Util Bar ── */
+.usec{margin-bottom:12px}
+.uh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.ulb{font-size:.7rem;font-weight:500;color:var(--sub);letter-spacing:.04em;text-transform:uppercase}
+.upt{font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--accent);transition:color .3s}
+.utr{height:8px;background:var(--border);border-radius:100px;overflow:hidden}
+.ufi{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),#12b89e);width:0%;transition:width .5s cubic-bezier(.4,0,.2,1)}
 
+/* ── Status Badge ── */
+.sbadge{display:flex;align-items:center;gap:9px;padding:11px 14px;border-radius:9px;font-size:.8rem;font-weight:500;transition:all .3s}
+.sbadge.ok{background:var(--ok-bg);color:var(--ok);border:1px solid rgba(10,126,110,.25)}
+.sbadge.warn{background:var(--warn-bg);color:var(--warn);border:1px solid rgba(192,57,14,.25)}
+.sbadge .dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0;animation:pu 1.8s infinite}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.4}}
 
+/* ── Clamp Hint ── */
+.clamp{display:flex;align-items:flex-start;gap:7px;background:#fff8f0;border:1px solid rgba(212,95,30,.35);border-radius:7px;padding:9px 12px;font-size:.74rem;color:var(--accent2);margin-bottom:12px;font-family:var(--mono);line-height:1.55}
+.clamp::before{content:'⚙ ';flex-shrink:0}
 
-/* ── Formula Block ── */
-.formula-block {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px 14px;
-  margin-top: 0;
-}
-.formula-line {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 4px;
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  color: var(--sub);
-  line-height: 1.8;
-}
-.formula-line .lhs {
-  color: var(--accent);
-  font-weight: 500;
-  min-width: 90px;
-}
-.formula-line .expr { color: #8a9da5; }
-.formula-line .eq { color: var(--sub); }
+/* ── Canvas ── */
+.cwrap{position:relative;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;background:#f7fafa}
+canvas{display:block;width:100%;height:auto}
+.clbl{position:absolute;bottom:8px;right:8px;font-family:var(--mono);font-size:.62rem;color:var(--sub);background:rgba(255,255,255,.88);padding:2px 7px;border-radius:4px}
+.leg{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}
+.legi{display:flex;align-items:center;gap:5px;font-size:.7rem;color:var(--sub)}
+.legd{width:11px;height:11px;border-radius:3px;flex-shrink:0}
 
-/* ── Result Cards ── */
-.result-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-.result-cell {
-  background: var(--bg);
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 12px 10px;
-  text-align: center;
-  transition: all 0.3s;
-}
-.result-cell.highlight {
-  background: var(--accent-light);
-  border-color: rgba(10,126,110,0.3);
-}
-.result-cell-label {
-  font-size: 0.64rem;
-  font-weight: 500;
-  color: var(--sub);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.result-cell-val {
-  font-family: var(--mono);
-  font-size: 1.45rem;
-  font-weight: 500;
-  color: var(--text);
-  line-height: 1;
-  transition: color 0.3s;
-}
-.result-cell-val .unit-sm {
-  font-size: 0.65rem;
-  color: var(--sub);
-  margin-left: 2px;
-}
-.result-cell.highlight .result-cell-val { color: var(--accent); }
+/* ── Formula ── */
+.frow{display:flex;flex-direction:column;gap:4px;padding:12px 0;border-bottom:1px solid var(--border)}
+.frow:last-child{border-bottom:none}
+.fn{font-size:.72rem;font-weight:700;color:var(--accent);letter-spacing:.03em;text-transform:uppercase}
+.fe{font-family:var(--mono);font-size:.79rem;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px;line-height:1.65}
+.fnt{font-size:.68rem;color:var(--sub);line-height:1.55}
 
-/* Utilization bar */
-.util-section { margin-bottom: 10px; }
-.util-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 6px;
-}
-.util-label {
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--sub);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.util-pct {
-  font-family: var(--mono);
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: var(--accent);
-  transition: color 0.3s;
-}
-.util-track {
-  height: 8px;
-  background: var(--border);
-  border-radius: 100px;
-  overflow: hidden;
-}
-.util-fill {
-  height: 100%;
-  border-radius: 100px;
-  background: linear-gradient(90deg, var(--accent), #12b89e);
-  width: 0%;
-  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
-}
+/* ── Buttons ── */
+.bcalc{display:block;width:100%;padding:16px;background:var(--accent);border:none;border-radius:10px;font-family:var(--sans);font-size:1.02rem;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.04em;transition:background .2s,transform .1s,box-shadow .2s;margin-bottom:10px;box-shadow:0 4px 14px rgba(10,126,110,.25);position:relative;overflow:hidden}
+.bcalc::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);transition:background .15s}
+.bcalc:active::after{background:rgba(255,255,255,.12)}.bcalc:active{transform:scale(.98)}
+.bcalc.dirty{background:var(--accent2);box-shadow:0 4px 14px rgba(212,95,30,.3);animation:pb 1.5s infinite}
+@keyframes pb{0%,100%{box-shadow:0 4px 14px rgba(212,95,30,.3)}50%{box-shadow:0 4px 22px rgba(212,95,30,.55)}}
+.breset{display:block;width:100%;padding:13px;background:transparent;border:1.5px solid var(--border);border-radius:10px;font-family:var(--sans);font-size:.88rem;font-weight:500;color:var(--sub);cursor:pointer;transition:all .2s;margin-bottom:8px}
+.breset:active{background:var(--border);transform:scale(.98)}
 
-/* Status badge */
-.status-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 0.78rem;
-  font-weight: 500;
-  margin-top: 4px;
-  transition: all 0.3s;
+/* ── PC tweaks ── */
+@media(min-width:840px){
+  .hdr{padding:28px 24px 64px}
+  .hdr h1{font-size:1.9rem}
+  .card-body{padding:18px}
+  .rdv,.rcv{font-size:1.8rem}
+  .iw input{font-size:1.05rem;padding:12px 6px 12px 12px}
+  .bcalc{font-size:1.05rem;padding:17px}
 }
-.status-badge.ok {
-  background: var(--ok-bg);
-  color: var(--ok);
-  border: 1px solid rgba(10,126,110,0.25);
+/* ── Narrow phones ── */
+@media(max-width:380px){
+  .rdv,.rcv{font-size:1.35rem}
+  .sep{width:24px;font-size:.9rem}
+  .iw input{font-size:.92rem}
 }
-.status-badge.warn {
-  background: var(--warn-bg);
-  color: var(--warn);
-  border: 1px solid rgba(192,57,14,0.25);
-}
-.status-badge .dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: currentColor;
-  flex-shrink: 0;
-  animation: pulse 1.8s infinite;
-}
-@keyframes pulse {
-  0%,100% { opacity:1; }
-  50% { opacity: 0.4; }
-}
-
-/* Preview canvas */
-.canvas-wrap {
-  position: relative;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  background: #f7fafa;
-}
-canvas {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.canvas-label {
-  position: absolute;
-  bottom: 8px; right: 8px;
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  color: var(--sub);
-  background: rgba(255,255,255,0.85);
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-
-/* Legend */
-.legend {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.67rem;
-  color: var(--sub);
-}
-.legend-dot {
-  width: 10px; height: 10px;
-  border-radius: 3px;
-  flex-shrink: 0;
-}
-
-/* ── Formula Reference section ── */
-.formula-ref { }
-.formula-row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-.formula-row:last-child { border-bottom: none; }
-.formula-name {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-.formula-expr {
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  color: var(--text);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 8px 10px;
-  line-height: 1.6;
-}
-.formula-note {
-  font-size: 0.67rem;
-  color: var(--sub);
-  line-height: 1.5;
-}
-
-/* ── Reset button ── */
-.mode-toggle {
-  display: flex;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 14px;
-}
-.mode-btn {
-  flex: 1;
-  padding: 9px 6px;
-  border: none;
-  background: transparent;
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--sub);
-  cursor: pointer;
-  transition: all 0.18s;
-  letter-spacing: 0.04em;
-  line-height: 1.4;
-  text-align: center;
-}
-.mode-btn strong { display: block; font-size: 0.78rem; margin-bottom: 1px; }
-.mode-btn.active {
-  background: var(--accent);
-  color: #fff;
-}
-.mode-btn:not(.active):active { background: var(--border); }
-.mode-divider {
-  width: 1px;
-  background: var(--border);
-  flex-shrink: 0;
-}
-.mode-section { display: none; }
-.mode-section.active { display: block; }
-
-.auto-hint {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--accent-light);
-  border: 1px solid rgba(10,126,110,0.25);
-  border-radius: 7px;
-  padding: 7px 12px;
-  font-size: 0.72rem;
-  color: var(--accent);
-  margin-bottom: 10px;
-  font-family: var(--mono);
-}
-.auto-tag {
-  display: inline-block;
-  font-size: 0.55rem;
-  background: var(--accent);
-  color: #fff;
-  border-radius: 4px;
-  padding: 1px 5px;
-  margin-left: 5px;
-  vertical-align: middle;
-  letter-spacing: 0.04em;
-}
-.auto-tag.manual {
-  background: var(--accent2);
-}
-.unlock-btn {
-  border: 1px solid rgba(10,126,110,0.4);
-  background: transparent;
-  color: var(--accent);
-  font-size: 0.68rem;
-  font-family: var(--mono);
-  border-radius: 5px;
-  padding: 3px 8px;
-  cursor: pointer;
-}
-.unlock-btn:active { background: rgba(10,126,110,0.1); }
-
-.lock-btn {
-  flex-shrink: 0;
-  border: none;
-  background: transparent;
-  font-size: 0.85rem;
-  padding: 0 6px 0 2px;
-  cursor: pointer;
-  line-height: 1;
-  opacity: 0.6;
-  transition: opacity 0.15s;
-}
-.lock-btn:active { opacity: 1; }
-.lock-btn.locked { opacity: 1; }
-
-.reverse-hint {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: #fffbea;
-  border: 1px solid #f0d060;
-  border-radius: 7px;
-  padding: 8px 12px;
-  font-size: 0.73rem;
-  color: #7a5800;
-  margin-bottom: 12px;
-  font-family: var(--mono);
-  line-height: 1.5;
-}
-.reverse-hint::before { content: '↩  '; }
-
-/* ── Machine Spec Panel ── */
-/* ── Machine selector tabs ── */
-.machine-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
-.machine-tab {
-  flex: 1;
-  min-width: 0;
-  padding: 10px 8px;
-  background: var(--bg);
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  font-family: var(--sans);
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: var(--sub);
-  cursor: pointer;
-  text-align: center;
-  line-height: 1.35;
-  transition: all 0.18s;
-}
-.machine-tab strong {
-  display: block;
-  font-size: 0.78rem;
-  color: var(--text);
-  margin-bottom: 2px;
-}
-.machine-tab.active {
-  background: var(--accent-light);
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.machine-tab.active strong { color: var(--accent); }
-.machine-tab:not(.active):active { background: var(--border); }
-
-.spec-panel {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 12px;
-}
-.spec-panel-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 9px 12px;
-  background: var(--accent);
-  cursor: pointer;
-  user-select: none;
-}
-.spec-panel-title {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: #fff;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.spec-panel-arrow {
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.7);
-  transition: transform 0.25s;
-}
-.spec-panel-arrow.open { transform: rotate(180deg); }
-.spec-panel-body {
-  display: none;
-  padding: 12px;
-}
-.spec-panel-body.open { display: block; }
-.spec-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.75rem;
-}
-.spec-table tr { border-bottom: 1px solid var(--border); }
-.spec-table tr:last-child { border-bottom: none; }
-.spec-table td {
-  padding: 7px 6px;
-  vertical-align: top;
-  line-height: 1.5;
-}
-.spec-table td:first-child {
-  color: var(--sub);
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  white-space: nowrap;
-  width: 42%;
-}
-.spec-table td:last-child {
-  color: var(--text);
-  font-weight: 500;
-}
-.spec-val { font-family: var(--mono); color: var(--accent); }
-.spec-val.warn { color: var(--accent2); }
-
-/* preset buttons */
-.preset-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-.preset-btn {
-  flex: 1;
-  min-width: 0;
-  padding: 8px 6px;
-  background: var(--bg);
-  border: 1.5px solid var(--border);
-  border-radius: 7px;
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--sub);
-  cursor: pointer;
-  text-align: center;
-  line-height: 1.4;
-  transition: all 0.15s;
-}
-.preset-btn:active, .preset-btn.active {
-  background: var(--accent-light);
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.preset-btn strong {
-  display: block;
-  font-size: 0.75rem;
-  color: var(--text);
-  margin-bottom: 1px;
-}
-
-/* validation chips */
-.check-row {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-top: 10px;
-}
-.check-chip {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 10px;
-  border-radius: 6px;
-  font-size: 0.72rem;
-  font-family: var(--mono);
-}
-.check-chip.ok  { background: var(--ok-bg);   color: var(--ok);   border: 1px solid rgba(10,126,110,0.2); }
-.check-chip.ng  { background: var(--warn-bg);  color: var(--warn); border: 1px solid rgba(192,57,14,0.2); }
-.check-chip.na  { background: var(--bg);       color: var(--sub);  border: 1px solid var(--border); }
-.check-chip .ci { font-size: 0.8rem; flex-shrink: 0; }
-
-/* ── Result dimension cells ── */
-.result-grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.result-dim-cell {
-  background: var(--bg);
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 12px 10px;
-  position: relative;
-  transition: border-color 0.3s, background 0.3s;
-}
-.result-dim-cell.ok  { border-color: rgba(10,126,110,0.4); background: var(--ok-bg); }
-.result-dim-cell.ng  { border-color: rgba(192,57,14,0.4);  background: var(--warn-bg); }
-.result-dim-label {
-  font-size: 0.63rem;
-  font-weight: 500;
-  color: var(--sub);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-.result-dim-val {
-  font-family: var(--mono);
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: var(--text);
-  line-height: 1;
-  transition: color 0.3s;
-}
-.result-dim-cell.ok .result-dim-val { color: var(--accent); }
-.result-dim-cell.ng .result-dim-val { color: var(--warn); }
-.result-dim-unit {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  color: var(--sub);
-  margin-top: 1px;
-  margin-bottom: 6px;
-}
-.result-dim-range {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  color: var(--sub);
-  margin-bottom: 5px;
-}
-.result-dim-bar-wrap {
-  height: 4px;
-  background: rgba(0,0,0,0.07);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.result-dim-bar {
-  height: 100%;
-  border-radius: 2px;
-  background: var(--accent);
-  width: 0%;
-  transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.3s;
-}
-.result-dim-cell.ng .result-dim-bar { background: var(--warn); }
-
-.btn-calc {
-  display: block;
-  width: 100%;
-  padding: 15px;
-  background: var(--accent);
-  border: none;
-  border-radius: 10px;
-  font-family: var(--sans);
-  font-size: 1rem;
-  font-weight: 700;
-  color: #fff;
-  cursor: pointer;
-  letter-spacing: 0.04em;
-  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-  margin-bottom: 10px;
-  box-shadow: 0 4px 14px rgba(10,126,110,0.25);
-  position: relative;
-  overflow: hidden;
-}
-.btn-calc::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255,255,255,0);
-  transition: background 0.15s;
-}
-.btn-calc:active::after { background: rgba(255,255,255,0.12); }
-.btn-calc:active { transform: scale(0.98); }
-.btn-calc.dirty {
-  background: var(--accent2);
-  box-shadow: 0 4px 14px rgba(212,95,30,0.3);
-  animation: pulse-btn 1.5s infinite;
-}
-@keyframes pulse-btn {
-  0%,100% { box-shadow: 0 4px 14px rgba(212,95,30,0.3); }
-  50%      { box-shadow: 0 4px 22px rgba(212,95,30,0.55); }
-}
-
-.btn-reset {
-  display: block;
-  width: 100%;
-  padding: 13px;
-  background: transparent;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  font-family: var(--sans);
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--sub);
-  cursor: pointer;
-  transition: all 0.2s;
-  margin-bottom: 8px;
-}
-.btn-reset:active { background: var(--border); transform: scale(0.98); }
-
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<div class="header">
-  <div class="header-badge">Forming Mold · Array Calc</div>
-  <h1>成型模具<br>陣列計算表</h1>
-  <p>Cavity Array Layout Calculator｜響應式手機版</p>
+<div class="hdr">
+  <div class="hdr-inner">
+    <div class="hdr-badge">Forming Mold · Array Calc</div>
+    <h1>成型模具陣列計算表</h1>
+    <p>Cavity Array Layout Calculator｜手機 &amp; PC 響應式</p>
+  </div>
 </div>
 
-<div class="content">
+<div class="page">
 
-  <!-- 1. 產品尺寸 -->
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">📦</div>
-      <div>
-        <div class="card-title">產品尺寸</div>
-        <div class="card-sub">Product Dimensions</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="pair-row">
-        <div class="field">
-          <label>長度 Length</label>
-          <div class="input-wrap">
-            <input type="number" id="pL" value="150" inputmode="decimal" oninput="markDirty()">
-            <span class="unit">mm</span>
-          </div>
-        </div>
-        <div class="pair-sep">×</div>
-        <div class="field">
-          <label>寬度 Width</label>
-          <div class="input-wrap">
-            <input type="number" id="pW" value="100" inputmode="decimal" oninput="markDirty()">
-            <span class="unit">mm</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- ── 左欄 ── -->
+  <div class="col-l">
 
-  <!-- 2. 陣列設定 -->
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">🔢</div>
-      <div>
-        <div class="card-title">陣列穴數設定</div>
-        <div class="card-sub">指定穴數 或 指定模具尺寸自動計算</div>
+    <!-- 1. 產品尺寸 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">📦</div>
+        <div><div class="card-title">產品尺寸</div><div class="card-sub">Product Dimensions</div></div>
       </div>
-    </div>
-    <div class="card-body">
-
-      <!-- 模式切換 -->
-      <div class="mode-toggle">
-        <button class="mode-btn active" id="modeBtnCavity" onclick="setMode('cavity')">
-          <strong>✏️ 指定穴數</strong>手動填入行×欄
-        </button>
-        <div class="mode-divider"></div>
-        <button class="mode-btn" id="modeBtnMold" onclick="setMode('mold')">
-          <strong>📐 指定模具尺寸</strong>自動計算穴數
-        </button>
-      </div>
-
-      <!-- Mode A: 指定穴數 -->
-      <div class="mode-section active" id="sectionCavity">
-        <div class="pair-row" style="margin-bottom:12px;">
+      <div class="card-body">
+        <div class="pair">
           <div class="field">
-            <label>行數 Rows（X）</label>
-            <div class="input-wrap">
-              <input type="number" id="rows" value="3" inputmode="numeric" min="1" oninput="onCavityInput()">
-              <span class="unit">列</span>
+            <label>長度 Length</label>
+            <div class="iw"><input type="number" id="pL" value="150" inputmode="decimal" oninput="markDirty()"><span class="unit">mm</span></div>
+          </div>
+          <div class="sep">×</div>
+          <div class="field">
+            <label>寬度 Width</label>
+            <div class="iw"><input type="number" id="pW" value="100" inputmode="decimal" oninput="markDirty()"><span class="unit">mm</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 陣列穴數設定 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">🔢</div>
+        <div><div class="card-title">陣列穴數設定</div><div class="card-sub">指定穴數 或 指定模具尺寸自動計算</div></div>
+      </div>
+      <div class="card-body">
+        <div class="mtog">
+          <button class="mbtn on" id="modeBtnCavity" onclick="setMode('cavity')"><strong>✏️ 指定穴數</strong>手動填入行×欄</button>
+          <div class="mdiv"></div>
+          <button class="mbtn" id="modeBtnMold" onclick="setMode('mold')"><strong>📐 指定模具尺寸</strong>自動計算穴數</button>
+        </div>
+
+        <!-- Mode A -->
+        <div class="msec on" id="sectionCavity">
+          <div class="pair" style="margin-bottom:12px">
+            <div class="field">
+              <label>行數 Rows（X）</label>
+              <div class="iw"><input type="number" id="rows" value="3" inputmode="numeric" min="1" oninput="onCavityInput()"><span class="unit">列</span></div>
             </div>
-          </div>
-          <div class="pair-sep">×</div>
-          <div class="field">
-            <label>欄數 Cols（Y）</label>
-            <div class="input-wrap">
-              <input type="number" id="cols" value="4" inputmode="numeric" min="1" oninput="onCavityInput()">
-              <span class="unit">行</span>
+            <div class="sep">×</div>
+            <div class="field">
+              <label>欄數 Cols（Y）</label>
+              <div class="iw"><input type="number" id="cols" value="4" inputmode="numeric" min="1" oninput="onCavityInput()"><span class="unit">行</span></div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Mode B: 指定模具尺寸 → 自動穴數 -->
-      <div class="mode-section" id="sectionMold">
-        <div class="auto-hint" id="autoHint" style="margin-bottom:10px;">
-          <span id="autoHintText">輸入模具目標尺寸，自動計算最大穴數</span>
-          <button class="unlock-btn" id="unlockBtn" onclick="unlockCavity()" style="display:none;">解除鎖定</button>
+        <!-- Mode B -->
+        <div class="msec" id="sectionMold">
+          <div class="ahint" id="autoHint" style="margin-bottom:10px">
+            <span id="autoHintText">輸入模具目標尺寸，自動計算最大穴數</span>
+            <button class="ubtn" id="unlockBtn" onclick="unlockCavity()" style="display:none">解除鎖定</button>
+          </div>
+          <div class="pair" style="margin-bottom:10px">
+            <div class="field">
+              <label>目標模具長 Mold L</label>
+              <div class="iw"><input type="number" id="moldLInput" value="1100" inputmode="decimal" oninput="markDirty()"><span class="unit">mm</span></div>
+            </div>
+            <div class="sep">×</div>
+            <div class="field">
+              <label>目標模具寬 Mold W</label>
+              <div class="iw"><input type="number" id="moldWInput" value="1000" inputmode="decimal" oninput="markDirty()"><span class="unit">mm</span></div>
+            </div>
+          </div>
+          <div class="rg2" style="margin-bottom:0">
+            <div class="rc"><div class="rclb">自動行數</div><div class="rcv" id="autoRowsOut">—<span class="usm">列</span></div></div>
+            <div class="rc hi"><div class="rclb">自動欄數</div><div class="rcv" id="autoColsOut">—<span class="usm">行</span></div></div>
+          </div>
         </div>
-        <div class="pair-row" style="margin-bottom:10px;">
+
+        <div class="igrid" style="margin-top:12px">
           <div class="field">
-            <label>目標模具長 Mold L</label>
-            <div class="input-wrap" id="moldLWrap">
-              <input type="number" id="moldLInput" value="1100" inputmode="decimal" oninput="markDirty()">
+            <label>穴間距 Gap<span class="tag" id="gapTag">自動</span></label>
+            <div class="iw" id="gapWrap">
+              <input type="number" id="gap" value="15" inputmode="decimal" oninput="onGapInput()">
+              <button class="lock" id="gapLockBtn" onclick="toggleGapLock()" title="鎖定間距">🔓</button>
               <span class="unit">mm</span>
             </div>
           </div>
-          <div class="pair-sep">×</div>
           <div class="field">
-            <label>目標模具寬 Mold W</label>
-            <div class="input-wrap" id="moldWWrap">
-              <input type="number" id="moldWInput" value="1000" inputmode="decimal" oninput="markDirty()">
+            <label>四周邊料 Margin<span class="tag" id="marginTag">自動</span></label>
+            <div class="iw" id="marginWrap">
+              <input type="number" id="margin" value="40" inputmode="decimal" oninput="onMarginInput()">
+              <button class="lock" id="marginLockBtn" onclick="toggleMarginLock()" title="鎖定邊料">🔓</button>
               <span class="unit">mm</span>
             </div>
           </div>
         </div>
-        <!-- Auto result display -->
-        <div class="result-grid" style="margin-bottom:0;">
-          <div class="result-cell">
-            <div class="result-cell-label">自動行數</div>
-            <div class="result-cell-val" id="autoRowsOut">—<span class="unit-sm">列</span></div>
-          </div>
-          <div class="result-cell highlight">
-            <div class="result-cell-label">自動欄數</div>
-            <div class="result-cell-val" id="autoColsOut">—<span class="unit-sm">行</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="input-grid">
-        <div class="field">
-          <label>穴間距 Gap<span class="auto-tag" id="gapTag">自動</span></label>
-          <div class="input-wrap" id="gapWrap">
-            <input type="number" id="gap" value="15" inputmode="decimal" oninput="onGapInput()">
-            <button class="lock-btn" id="gapLockBtn" onclick="toggleGapLock()" title="鎖定間距">🔓</button>
-            <span class="unit">mm</span>
-          </div>
-        </div>
-        <div class="field">
-          <label>四周邊料 Margin<span class="auto-tag" id="marginTag">自動</span></label>
-          <div class="input-wrap" id="marginWrap">
-            <input type="number" id="margin" value="40" inputmode="decimal" oninput="onMarginInput()">
-            <button class="lock-btn" id="marginLockBtn" onclick="toggleMarginLock()" title="鎖定邊料">🔓</button>
-            <span class="unit">mm</span>
-          </div>
-        </div>
       </div>
     </div>
-  </div>
 
-  <!-- 3. 機台限制 -->
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">⚙️</div>
-      <div>
-        <div class="card-title">機台規格 · 尺寸限制</div>
-        <div class="card-sub">選擇機台 · 自動套用規格限制</div>
+    <!-- 3. 機台規格 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">⚙️</div>
+        <div><div class="card-title">機台規格 · 尺寸限制</div><div class="card-sub">選擇機台 · 自動套用規格限制</div></div>
       </div>
-    </div>
-    <div class="card-body">
-
-      <!-- Machine selector tabs -->
-      <div class="machine-tabs">
-        <button class="machine-tab active" id="tabAsano" onclick="selectMachine('asano')">
-          <strong>ASANO</strong>壓空真空成型機
-        </button>
-        <button class="machine-tab" id="tabShuangxing" onclick="selectMachine('shuangxing')">
-          <strong>雙星</strong>密封式真空成型機
-        </button>
-      </div>
-
-      <!-- Spec accordion (dynamic content) -->
-      <div class="spec-panel">
-        <div class="spec-panel-head" onclick="toggleSpec()">
-          <span class="spec-panel-title" id="specPanelTitle">📋 ASANO 機台規格表</span>
-          <span class="spec-panel-arrow" id="specArrow">▼</span>
+      <div class="card-body">
+        <div class="mtabs">
+          <button class="mtab on" id="tabAsano" onclick="selectMachine('asano')"><strong>ASANO</strong>壓空真空成型機</button>
+          <button class="mtab" id="tabShuangxing" onclick="selectMachine('shuangxing')"><strong>雙星</strong>密封式真空成型機</button>
         </div>
-        <div class="spec-panel-body" id="specBody">
-          <!-- populated by JS -->
+        <div class="spanel">
+          <div class="sphead" onclick="toggleSpec()">
+            <span class="sptitle" id="specPanelTitle">📋 ASANO 機台規格表</span>
+            <span class="sparr" id="specArrow">▼</span>
+          </div>
+          <div class="spbody" id="specBody"></div>
         </div>
-      </div>
-
-      <!-- Quick preset buttons (dynamic) -->
-      <div style="font-family:var(--mono);font-size:0.65rem;color:var(--sub);margin-bottom:6px;letter-spacing:0.06em;">快速套用機台限制</div>
-      <div class="preset-row" id="presetRow">
-        <!-- populated by JS -->
-      </div>
-
-      <!-- Manual override -->
-      <div style="font-family:var(--mono);font-size:0.65rem;color:var(--sub);margin-bottom:6px;letter-spacing:0.06em;">自訂機台限制</div>
-      <div class="pair-row" style="margin-bottom:10px;">
-        <div class="field">
-          <label>限制寬度 Max W</label>
-          <div class="input-wrap">
-            <input type="number" id="maxW" value="1000" inputmode="decimal" oninput="clearPreset();markDirty()">
-            <span class="unit">mm</span>
+        <div class="slabel">快速套用機台限制</div>
+        <div class="prow" id="presetRow"></div>
+        <div class="slabel">自訂機台限制</div>
+        <div class="pair" style="margin-bottom:10px">
+          <div class="field">
+            <label>限制寬度 Max W</label>
+            <div class="iw"><input type="number" id="maxW" value="1000" inputmode="decimal" oninput="clearPreset();markDirty()"><span class="unit">mm</span></div>
+          </div>
+          <div class="sep">×</div>
+          <div class="field">
+            <label>限制長度 Max L</label>
+            <div class="iw"><input type="number" id="maxL" value="1100" inputmode="decimal" oninput="clearPreset();markDirty()"><span class="unit">mm</span></div>
           </div>
         </div>
-        <div class="pair-sep">×</div>
-        <div class="field">
-          <label>限制長度 Max L</label>
-          <div class="input-wrap">
-            <input type="number" id="maxL" value="1100" inputmode="decimal" oninput="clearPreset();markDirty()">
-            <span class="unit">mm</span>
+        <div class="chips" id="checkRow"></div>
+      </div>
+    </div>
+
+    <button class="bcalc" id="calcBtn" onclick="calc()">▶ 開始計算</button>
+    <button class="breset" onclick="reset()">↺ 重設所有數值</button>
+
+  </div><!-- /col-l -->
+
+  <!-- ── 右欄 ── -->
+  <div class="col-r">
+
+    <!-- 4. 計算結果 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">📊</div>
+        <div><div class="card-title">計算結果</div><div class="card-sub" id="resultCardSub">依 ASANO 機台規格自動驗證</div></div>
+      </div>
+      <div class="card-body">
+        <div class="clamp" id="clampHint" style="display:none"><span></span></div>
+        <div class="rdg2">
+          <div class="rdc" id="cellL">
+            <div class="rdlb">模具總長度</div>
+            <div class="rdv" id="outLVal">—</div>
+            <div class="rdu">mm</div>
+            <div class="rdr" id="rangeL">範圍 600–1,100 mm</div>
+            <div class="rbw"><div class="rb" id="barL"></div></div>
+          </div>
+          <div class="rdc" id="cellW">
+            <div class="rdlb">模具總寬度</div>
+            <div class="rdv" id="outWVal">—</div>
+            <div class="rdu">mm</div>
+            <div class="rdr" id="rangeW">範圍 560–1,000 mm</div>
+            <div class="rbw"><div class="rb" id="barW"></div></div>
           </div>
         </div>
-      </div>
-
-      <!-- Validation chips -->
-      <div class="check-row" id="checkRow"></div>
-    </div>
-  </div>
-
-  <!-- 4. 計算結果 -->
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">📊</div>
-      <div>
-        <div class="card-title">計算結果</div>
-        <div class="card-sub" id="resultCardSub">依 ASANO 機台規格自動驗證</div>
-      </div>
-    </div>
-    <div class="card-body">
-
-      <!-- 自動調整穴數提示 -->
-      <div class="clamp-hint" id="clampHint" style="display:none;">
-        <span></span>
-      </div>
-
-      <!-- 模具總長/寬 唯讀顯示 + 機台範圍標注 -->
-      <div class="result-grid-2" style="margin-bottom:12px;">
-        <div class="result-dim-cell" id="cellL">
-          <div class="result-dim-label">模具總長度</div>
-          <div class="result-dim-val" id="outLVal">—</div>
-          <div class="result-dim-unit">mm</div>
-          <div class="result-dim-range" id="rangeL">範圍 600–1,100 mm</div>
-          <div class="result-dim-bar-wrap"><div class="result-dim-bar" id="barL"></div></div>
+        <div class="rg2">
+          <div class="rc"><div class="rclb">總穴數</div><div class="rcv" id="outN">—<span class="usm">穴</span></div></div>
+          <div class="rc hi"><div class="rclb">材料利用率</div><div class="rcv" id="outUtil">—<span class="usm">%</span></div></div>
         </div>
-        <div class="result-dim-cell" id="cellW">
-          <div class="result-dim-label">模具總寬度</div>
-          <div class="result-dim-val" id="outWVal">—</div>
-          <div class="result-dim-unit">mm</div>
-          <div class="result-dim-range" id="rangeW">範圍 560–1,000 mm</div>
-          <div class="result-dim-bar-wrap"><div class="result-dim-bar" id="barW"></div></div>
+        <div class="usec">
+          <div class="uh"><span class="ulb">利用率 Utilization</span><span class="upt" id="utilPct">0%</span></div>
+          <div class="utr"><div class="ufi" id="utilBar"></div></div>
         </div>
-      </div>
-
-      <!-- 穴數 & 利用率 -->
-      <div class="result-grid" style="margin-bottom:12px;">
-        <div class="result-cell" id="cellN">
-          <div class="result-cell-label">總穴數</div>
-          <div class="result-cell-val" id="outN">—<span class="unit-sm">穴</span></div>
-        </div>
-        <div class="result-cell highlight" id="cellUtil">
-          <div class="result-cell-label">材料利用率</div>
-          <div class="result-cell-val" id="outUtil">—<span class="unit-sm">%</span></div>
-        </div>
-      </div>
-
-      <div class="util-section">
-        <div class="util-header">
-          <span class="util-label">利用率 Utilization</span>
-          <span class="util-pct" id="utilPct">0%</span>
-        </div>
-        <div class="util-track">
-          <div class="util-fill" id="utilBar"></div>
-        </div>
-      </div>
-
-      <div class="status-badge ok" id="statusBadge">
-        <div class="dot"></div>
-        <span id="statusText">尺寸符合機台限制，可正常生產</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- 5. 預覽圖 -->
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">🖼️</div>
-      <div>
-        <div class="card-title">陣列圖預覽</div>
-        <div class="card-sub">Layout Preview</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="canvas-wrap">
-        <canvas id="c" width="600" height="420"></canvas>
-        <div class="canvas-label" id="cLabel">— × — mm</div>
-      </div>
-      <div class="legend">
-        <div class="legend-item">
-          <div class="legend-dot" style="background:#0a7e6e;opacity:0.75;"></div>產品穴位
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:#dce6e9;border:1px solid #bccdd2;"></div>邊料區域
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:#f0e8df;border:1px solid #e0cfc0;"></div>穴間距
+        <div class="sbadge ok" id="statusBadge">
+          <div class="dot"></div>
+          <span id="statusText">尺寸符合機台限制，可正常生產</span>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- 6. 公式說明 -->
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">📐</div>
-      <div>
-        <div class="card-title">計算公式說明</div>
-        <div class="card-sub">Formula Reference</div>
+    <!-- 5. 陣列圖預覽 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">🖼️</div>
+        <div><div class="card-title">陣列圖預覽</div><div class="card-sub">Layout Preview</div></div>
       </div>
-    </div>
-    <div class="card-body">
-      <div class="formula-ref">
-        <div class="formula-row">
-          <div class="formula-name">模具總長度</div>
-          <div class="formula-expr">總長 = (產品長 × 行數) + (間距 × (行數−1)) + (邊料 × 2)</div>
-          <div class="formula-note">沿行方向排列，兩端各加一份邊料，穴間共 (行數−1) 個間距。</div>
+      <div class="card-body">
+        <div class="cwrap">
+          <canvas id="c" width="600" height="420"></canvas>
+          <div class="clbl" id="cLabel">— × — mm</div>
         </div>
-        <div class="formula-row">
-          <div class="formula-name">模具總寬度</div>
-          <div class="formula-expr">總寬 = (產品寬 × 欄數) + (間距 × (欄數−1)) + (邊料 × 2)</div>
-          <div class="formula-note">沿欄方向排列，邏輯與總長相同。</div>
-        </div>
-        <div class="formula-row">
-          <div class="formula-name">總穴數</div>
-          <div class="formula-expr">穴數 = 行數 × 欄數</div>
-          <div class="formula-note">行欄相乘即為一模出件數。</div>
-        </div>
-        <div class="formula-row">
-          <div class="formula-name">材料利用率</div>
-          <div class="formula-expr">利用率 = (產品長 × 產品寬 × 穴數)
-          ÷ (總長 × 總寬) × 100%</div>
-          <div class="formula-note">產品投影總面積佔模具板面積的百分比，越高代表材料浪費越少。</div>
-        </div>
-        <div class="formula-row">
-          <div class="formula-name">機台限制檢核</div>
-          <div class="formula-expr">條件：總長 ≤ 機台最大長度</div>
-          <div class="formula-note">若總長超出機台上限，系統將發出警示，需調整行數或產品尺寸。</div>
+        <div class="leg">
+          <div class="legi"><div class="legd" style="background:#0a7e6e;opacity:.75"></div>產品穴位</div>
+          <div class="legi"><div class="legd" style="background:#dce6e9;border:1px solid #bccdd2"></div>邊料區域</div>
+          <div class="legi"><div class="legd" style="background:#f0e8df;border:1px solid #e0cfc0"></div>穴間距</div>
         </div>
       </div>
     </div>
-  </div>
 
-  <button class="btn-calc" id="calcBtn" onclick="calc()">▶ 開始計算</button>
-  <button class="btn-reset" onclick="reset()">↺ 重設所有數值</button>
+    <!-- 6. 公式說明 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">📐</div>
+        <div><div class="card-title">計算公式說明</div><div class="card-sub">Formula Reference</div></div>
+      </div>
+      <div class="card-body">
+        <div class="frow"><div class="fn">模具總長度</div><div class="fe">總長 = (產品長 × 行數) + (間距 × (行數−1)) + (邊料 × 2)</div><div class="fnt">沿行方向排列，兩端各加一份邊料，穴間共 (行數−1) 個間距。</div></div>
+        <div class="frow"><div class="fn">模具總寬度</div><div class="fe">總寬 = (產品寬 × 欄數) + (間距 × (欄數−1)) + (邊料 × 2)</div><div class="fnt">沿欄方向排列，邏輯與總長相同。</div></div>
+        <div class="frow"><div class="fn">總穴數</div><div class="fe">穴數 = 行數 × 欄數</div><div class="fnt">行欄相乘即為一模出件數。</div></div>
+        <div class="frow"><div class="fn">材料利用率</div><div class="fe">利用率 = (產品長 × 產品寬 × 穴數) ÷ (總長 × 總寬) × 100%</div><div class="fnt">產品投影總面積佔模具板面積的百分比，越高代表材料浪費越少。</div></div>
+        <div class="frow"><div class="fn">機台限制檢核</div><div class="fe">條件：總長 ≤ 機台最大長度</div><div class="fnt">若總長超出機台上限，系統將發出警示，需調整行數或產品尺寸。</div></div>
+      </div>
+    </div>
 
-</div><!-- /content -->
+  </div><!-- /col-r -->
+
+</div><!-- /page -->
 
 <script>
-const DEFAULTS = { pL:150, pW:100, rows:3, cols:4, gap:15, margin:40, maxL:1100, maxW:1000, moldLInput:1100, moldWInput:1000 };
+const DEFAULTS={pL:150,pW:100,rows:3,cols:4,gap:15,margin:40,maxL:1100,maxW:1000,moldLInput:1100,moldWInput:1000};
+function v(id){return parseFloat(document.getElementById(id).value)||0}
+function vi(id){return parseInt(document.getElementById(id).value)||0}
 
-function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
-function vi(id) { return parseInt(document.getElementById(id).value) || 0; }
+let _source='formula',_cavityLocked=false,_marginLocked=false,_gapLocked=false,_calcMode='cavity',_dirty=false;
 
-// _source: 'formula' = driven by input params, 'L'/'W' = user typed mold size
-let _source = 'formula';
-// _cavityLocked: true = user manually set rows/cols, false = auto from mold size
-let _cavityLocked = false;
-// _marginLocked: true = user locked margin value
-let _marginLocked = false;
-// _gapLocked: true = user locked gap value
-let _gapLocked = false;
-
-function onGapInput() {
-  if (!_gapLocked) {
-    _gapLocked = true;
-    updateGapUI();
-  }
+function onGapInput(){if(!_gapLocked){_gapLocked=true;updateGapUI()}markDirty()}
+function toggleGapLock(){_gapLocked=!_gapLocked;updateGapUI();if(!_gapLocked)calc()}
+function updateGapUI(){
+  const b=document.getElementById('gapLockBtn'),t=document.getElementById('gapTag'),w=document.getElementById('gapWrap');
+  if(_gapLocked){b.textContent='🔒';b.classList.add('on');t.textContent='鎖定';t.className='tag m';w.style.borderColor='var(--accent2)';w.style.boxShadow='0 0 0 2px rgba(212,95,30,.12)'}
+  else{b.textContent='🔓';b.classList.remove('on');t.textContent='自動';t.className='tag';w.style.borderColor='';w.style.boxShadow=''}
+}
+function onMarginInput(){if(!_marginLocked){_marginLocked=true;updateMarginUI()}markDirty()}
+function toggleMarginLock(){_marginLocked=!_marginLocked;updateMarginUI();if(!_marginLocked)calc()}
+function updateMarginUI(){
+  const b=document.getElementById('marginLockBtn'),t=document.getElementById('marginTag'),w=document.getElementById('marginWrap');
+  if(_marginLocked){b.textContent='🔒';b.classList.add('on');t.textContent='鎖定';t.className='tag m';w.style.borderColor='var(--accent2)';w.style.boxShadow='0 0 0 2px rgba(212,95,30,.12)'}
+  else{b.textContent='🔓';b.classList.remove('on');t.textContent='自動';t.className='tag';w.style.borderColor='';w.style.boxShadow=''}
+}
+function setCavityUI(locked){
+  _cavityLocked=locked;
+  const ub=document.getElementById('unlockBtn');
+  if(ub)ub.style.display=(locked&&_calcMode==='mold')?'inline-block':'none';
+  const ah=document.getElementById('autoHintText');
+  if(ah)ah.textContent=locked?'穴數已手動鎖定':'輸入模具目標尺寸，自動計算最大穴數';
+}
+function setMode(mode){
+  _calcMode=mode;
+  document.getElementById('sectionCavity').classList.toggle('on',mode==='cavity');
+  document.getElementById('sectionMold').classList.toggle('on',mode==='mold');
+  document.getElementById('modeBtnCavity').classList.toggle('on',mode==='cavity');
+  document.getElementById('modeBtnMold').classList.toggle('on',mode==='mold');
   markDirty();
 }
-
-function toggleGapLock() {
-  _gapLocked = !_gapLocked;
-  updateGapUI();
-  if (!_gapLocked) calc();
+function onCavityInput(){markDirty()}
+function unlockCavity(){_cavityLocked=false;setCavityUI(false);markDirty()}
+function markDirty(){
+  _dirty=true;
+  const b=document.getElementById('calcBtn');
+  if(b){b.classList.add('dirty');b.textContent='🔄 重新計算'}
 }
-
-function updateGapUI() {
-  const btn = document.getElementById('gapLockBtn');
-  const tag = document.getElementById('gapTag');
-  const wrap = document.getElementById('gapWrap');
-  if (_gapLocked) {
-    btn.textContent = '🔒';
-    btn.classList.add('locked');
-    tag.textContent = '鎖定';
-    tag.className = 'auto-tag manual';
-    wrap.style.borderColor = 'var(--accent2)';
-    wrap.style.boxShadow = '0 0 0 2px rgba(212,95,30,0.12)';
-  } else {
-    btn.textContent = '🔓';
-    btn.classList.remove('locked');
-    tag.textContent = '自動';
-    tag.className = 'auto-tag';
-    wrap.style.borderColor = '';
-    wrap.style.boxShadow = '';
+function calc(){
+  _dirty=false;
+  const b=document.getElementById('calcBtn');
+  if(b){b.classList.remove('dirty');b.textContent='▶ 開始計算'}
+  _source='formula';
+  const pL=v('pL'),pW=v('pW'),gap=v('gap'),margin=v('margin'),maxL=v('maxL');
+  let rows,cols;
+  if(_calcMode==='mold'){
+    const mL=parseFloat(document.getElementById('moldLInput').value)||0;
+    const mW=parseFloat(document.getElementById('moldWInput').value)||0;
+    rows=mL>0?Math.max(1,Math.floor((mL-margin*2+gap)/(pL+gap))):1;
+    cols=mW>0?Math.max(1,Math.floor((mW-margin*2+gap)/(pW+gap))):1;
+    document.getElementById('rows').value=rows;
+    document.getElementById('cols').value=cols;
+  }else{
+    rows=Math.max(1,vi('rows'));cols=Math.max(1,vi('cols'));
   }
+  const _m=MACHINES[_activeMachine];
+  let ar=rows,ac=cols;
+  if(_m.maxW>0){while(ac>1&&pW*ac+gap*(ac-1)+margin*2>_m.maxW)ac--}
+  if(_m.maxL>0){while(ar>1&&pL*ar+gap*(ar-1)+margin*2>_m.maxL)ar--}
+  const clamped=ar!==rows||ac!==cols;
+  const ch=document.getElementById('clampHint');
+  if(clamped){
+    document.getElementById('rows').value=ar;document.getElementById('cols').value=ac;
+    if(ch){ch.style.display='flex';ch.querySelector('span').textContent=`⚠ 依 ${_m.name} 限制自動調整：穴數由 ${rows}×${cols} → ${ar}×${ac}`}
+  }else{if(ch)ch.style.display='none'}
+  rows=ar;cols=ac;
+  const totL=pL*rows+gap*(rows-1)+margin*2;
+  const totW=pW*cols+gap*(cols-1)+margin*2;
+  const ae=document.getElementById('autoRowsOut'),ce=document.getElementById('autoColsOut');
+  if(ae)ae.innerHTML=rows+'<span class="usm">列</span>';
+  if(ce)ce.innerHTML=cols+'<span class="usm">行</span>';
+  updateShared(pL,pW,rows,cols,gap,margin,totL,totW,maxL);
 }
-
-function onMarginInput() {
-  if (!_marginLocked) {
-    _marginLocked = true;
-    updateMarginUI();
+function updateShared(pL,pW,rows,cols,gap,margin,totL,totW,maxL){
+  const _m=MACHINES[_activeMachine];
+  const MAX_L=_m.maxL,MIN_L=_m.minL,MAX_W=_m.maxW,MIN_W=_m.minW;
+  const SH_MAX=_m.sheetMaxW,SH_MIN=_m.sheetMinW;
+  const cav=rows*cols;
+  const util=(totL>0&&totW>0)?(pL*pW*cav)/(totL*totW)*100:0;
+  function udc(cid,vid,bid,rid,val,mn,mx){
+    const cel=document.getElementById(cid),ve=document.getElementById(vid),be=document.getElementById(bid),re=document.getElementById(rid);
+    if(!cel||!ve||!be)return false;
+    ve.textContent=val>0?val.toFixed(0):'—';
+    if(re)re.textContent=mn>0?`範圍 ${mn.toLocaleString()}–${mx.toLocaleString()} mm`:`最大 ${mx.toLocaleString()} mm`;
+    const ok=val>0&&val<=mx&&(mn===0||val>=mn);
+    const bm=mn>0?mn:0;
+    be.style.width=(val>0?Math.min(100,Math.max(2,((val-bm)/(mx-bm))*100)):0)+'%';
+    cel.className='rdc'+(val<=0?'':ok?' ok':' ng');
+    return ok;
   }
-  markDirty();
-}
-
-function toggleMarginLock() {
-  _marginLocked = !_marginLocked;
-  updateMarginUI();
-  if (!_marginLocked) calc(); // recalc to allow reverse updates again
-}
-
-function updateMarginUI() {
-  const btn = document.getElementById('marginLockBtn');
-  const tag = document.getElementById('marginTag');
-  const wrap = document.getElementById('marginWrap');
-  if (_marginLocked) {
-    btn.textContent = '🔒';
-    btn.classList.add('locked');
-    tag.textContent = '鎖定';
-    tag.className = 'auto-tag manual';
-    wrap.style.borderColor = 'var(--accent2)';
-    wrap.style.boxShadow = '0 0 0 2px rgba(212,95,30,0.12)';
-  } else {
-    btn.textContent = '🔓';
-    btn.classList.remove('locked');
-    tag.textContent = '自動';
-    tag.className = 'auto-tag';
-    wrap.style.borderColor = '';
-    wrap.style.boxShadow = '';
-  }
-}
-
-function autoCalcCavity(totL, totW, pL, pW, gap, margin) {
-  if (_cavityLocked) return;
-  const autoRows = Math.max(1, Math.floor((totL - margin * 2 + gap) / (pL + gap)));
-  const autoCols = Math.max(1, Math.floor((totW - margin * 2 + gap) / (pW + gap)));
-  document.getElementById('rows').value = autoRows;
-  document.getElementById('cols').value = autoCols;
-}
-
-function setCavityUI(locked) {
-  _cavityLocked = locked;
-  // unlockBtn only shown in mold mode
-  const ub = document.getElementById('unlockBtn');
-  if (ub) ub.style.display = (locked && _calcMode === 'mold') ? 'inline-block' : 'none';
-  const ah = document.getElementById('autoHintText');
-  if (ah) ah.textContent = locked
-    ? '穴數已手動鎖定'
-    : '輸入模具目標尺寸，自動計算最大穴數';
-}
-
-let _calcMode = 'cavity'; // 'cavity' = manual rows/cols, 'mold' = auto from mold size
-
-function setMode(mode) {
-  _calcMode = mode;
-  document.getElementById('sectionCavity').classList.toggle('active', mode === 'cavity');
-  document.getElementById('sectionMold').classList.toggle('active', mode === 'mold');
-  document.getElementById('modeBtnCavity').classList.toggle('active', mode === 'cavity');
-  document.getElementById('modeBtnMold').classList.toggle('active', mode === 'mold');
-  markDirty();
-}
-
-function onCavityInput() {
-  markDirty();
-}
-
-function unlockCavity() {
-  _cavityLocked = false;
-  setCavityUI(false);
-  markDirty();
-}
-
-let _dirty = false;
-
-function markDirty() {
-  _dirty = true;
-  const btn = document.getElementById('calcBtn');
-  if (btn) {
-    btn.classList.add('dirty');
-    btn.textContent = '🔄 重新計算';
-  }
-}
-
-function calc() {
-  _dirty = false;
-  const btn = document.getElementById('calcBtn');
-  if (btn) { btn.classList.remove('dirty'); btn.textContent = '▶ 開始計算'; }
-  _source = 'formula';
-  const pL = v('pL'), pW = v('pW');
-  const gap = v('gap'), margin = v('margin'), maxL = v('maxL');
-
-  let rows, cols;
-  if (_calcMode === 'mold') {
-    // Mode B: derive rows/cols from user-specified mold dimensions
-    const moldL = parseFloat(document.getElementById('moldLInput').value) || 0;
-    const moldW = parseFloat(document.getElementById('moldWInput').value) || 0;
-    rows = moldL > 0 ? Math.max(1, Math.floor((moldL - margin * 2 + gap) / (pL + gap))) : 1;
-    cols = moldW > 0 ? Math.max(1, Math.floor((moldW - margin * 2 + gap) / (pW + gap))) : 1;
-    // Show auto result
-    const arEl = document.getElementById('autoRowsOut');
-    const acEl = document.getElementById('autoColsOut');
-    if (arEl) arEl.innerHTML = rows + '<span class="unit-sm">列</span>';
-    if (acEl) acEl.innerHTML = cols + '<span class="unit-sm">行</span>';
-    // Sync rows/cols inputs for consistency
-    document.getElementById('rows').value = rows;
-    document.getElementById('cols').value = cols;
-  } else {
-    // Mode A: use manually entered rows/cols
-    rows = Math.max(1, vi('rows'));
-    cols = Math.max(1, vi('cols'));
-  }
-
-  const _m = MACHINES[_activeMachine];
-
-  // Auto-clamp rows/cols so mold dimensions fit within machine limits
-  // Reduce cols first (width), then rows (length) if still over limit
-  let adjRows = rows, adjCols = cols;
-
-  if (_m.maxW > 0) {
-    while (adjCols > 1) {
-      const w = pW * adjCols + gap * (adjCols - 1) + margin * 2;
-      if (w <= _m.maxW) break;
-      adjCols--;
-    }
-  }
-  if (_m.maxL > 0) {
-    while (adjRows > 1) {
-      const l = pL * adjRows + gap * (adjRows - 1) + margin * 2;
-      if (l <= _m.maxL) break;
-      adjRows--;
-    }
-  }
-
-  // If clamped, show hint and update input fields
-  const clamped = adjRows !== rows || adjCols !== cols;
-  const clampHint = document.getElementById('clampHint');
-  if (clamped) {
-    document.getElementById('rows').value = adjRows;
-    document.getElementById('cols').value = adjCols;
-    if (clampHint) {
-      clampHint.style.display = 'flex';
-      clampHint.querySelector('span').textContent =
-        `⚠ 依 ${_m.name} 限制自動調整：穴數由 ${rows}×${cols} → ${adjRows}×${adjCols}`;
-    }
-  } else {
-    if (clampHint) clampHint.style.display = 'none';
-  }
-
-  rows = adjRows;
-  cols = adjCols;
-
-  const totL = pL * rows + gap * (rows - 1) + margin * 2;
-  const totW = pW * cols + gap * (cols - 1) + margin * 2;
-
-  // Also update mold mode auto-result display
-  const arEl = document.getElementById('autoRowsOut');
-  const acEl = document.getElementById('autoColsOut');
-  if (arEl) arEl.innerHTML = rows + '<span class="unit-sm">列</span>';
-  if (acEl) acEl.innerHTML = cols + '<span class="unit-sm">行</span>';
-
-  updateShared(pL, pW, rows, cols, gap, margin, totL, totW, maxL);
-}
-
-
-
-function updateShared(pL, pW, rows, cols, gap, margin, totL, totW, maxL) {
-  const _m = MACHINES[_activeMachine];
-  const MOLD_MAX_L = _m.maxL, MOLD_MIN_L = _m.minL;
-  const MOLD_MAX_W = _m.maxW, MOLD_MIN_W = _m.minW;
-  const SHEET_MAX_W = _m.sheetMaxW, SHEET_MIN_W = _m.sheetMinW;
-
-  const cavities = rows * cols;
-  const util = (totL > 0 && totW > 0) ? (pL * pW * cavities) / (totL * totW) * 100 : 0;
-
-  // ── Dim cells (read-only, auto-validated) ──
-  function updateDimCell(cellId, valId, barId, rangeId, val, minV, maxV) {
-    const cell  = document.getElementById(cellId);
-    const valEl = document.getElementById(valId);
-    const barEl = document.getElementById(barId);
-    const rngEl = document.getElementById(rangeId);
-    if (!cell || !valEl || !barEl) return false;
-    // Display value
-    valEl.textContent = val > 0 ? val.toFixed(0) : '—';
-    // Range label (dynamic, respects minV=0 meaning "no lower limit")
-    if (rngEl) {
-      rngEl.textContent = minV > 0
-        ? `範圍 ${minV.toLocaleString()}–${maxV.toLocaleString()} mm`
-        : `最大 ${maxV.toLocaleString()} mm`;
-    }
-    // inRange: val must be > 0 (calculated), <= maxV, and >= minV (skip lower check if minV=0)
-    const inRange = val > 0 && val <= maxV && (minV === 0 || val >= minV);
-    // Progress bar: when minV=0, map 0→maxV; otherwise map minV→maxV
-    const barMin = minV > 0 ? minV : 0;
-    const pct = val > 0 ? Math.min(100, Math.max(2, ((val - barMin) / (maxV - barMin)) * 100)) : 0;
-    barEl.style.width = pct + '%';
-    cell.className = 'result-dim-cell' + (val <= 0 ? '' : inRange ? ' ok' : ' ng');
-    return inRange;
-  }
-
-  const lOk = updateDimCell('cellL', 'outLVal', 'barL', 'rangeL', totL, MOLD_MIN_L, MOLD_MAX_L);
-  const wOk = updateDimCell('cellW', 'outWVal', 'barW', 'rangeW', totW, MOLD_MIN_W, MOLD_MAX_W);
-
-  document.getElementById('outN').innerHTML = cavities + '<span class="unit-sm">穴</span>';
-  document.getElementById('outUtil').innerHTML = util.toFixed(1) + '<span class="unit-sm">%</span>';
-  document.getElementById('utilPct').textContent = util.toFixed(1) + '%';
-  document.getElementById('utilBar').style.width = Math.min(util, 100) + '%';
-  document.getElementById('cLabel').textContent = `${totL.toFixed(0)} × ${totW.toFixed(0)} mm`;
-
-  // ── Machine validation chips ──
-  const checks = [
-    {
-      label: '成型長度', ok: lOk, na: totL <= 0,
-      msg: `${totL.toFixed(0)} mm`,
-      range: MOLD_MIN_L > 0 ? `${MOLD_MIN_L.toLocaleString()}–${MOLD_MAX_L.toLocaleString()} mm` : `最大 ${MOLD_MAX_L.toLocaleString()} mm`
-    },
-    {
-      label: '成型寬度', ok: wOk, na: totW <= 0,
-      msg: `${totW.toFixed(0)} mm`,
-      range: MOLD_MIN_W > 0 ? `${MOLD_MIN_W.toLocaleString()}–${MOLD_MAX_W.toLocaleString()} mm` : `最大 ${MOLD_MAX_W.toLocaleString()} mm`
-    },
-    {
-      label: '皮料寬度',
-      ok: SHEET_MAX_W > 0 ? (totW > 0 && totW <= SHEET_MAX_W && (SHEET_MIN_W === 0 || totW >= SHEET_MIN_W)) : true,
-      na: totW <= 0 || SHEET_MAX_W === 0,
-      msg: `對應皮料 ${totW.toFixed(0)} mm`,
-      range: SHEET_MIN_W > 0 ? `${SHEET_MIN_W}–${SHEET_MAX_W} mm` : `最大 ${SHEET_MAX_W} mm`
-    }
+  const lOk=udc('cellL','outLVal','barL','rangeL',totL,MIN_L,MAX_L);
+  const wOk=udc('cellW','outWVal','barW','rangeW',totW,MIN_W,MAX_W);
+  document.getElementById('outN').innerHTML=cav+'<span class="usm">穴</span>';
+  document.getElementById('outUtil').innerHTML=util.toFixed(1)+'<span class="usm">%</span>';
+  document.getElementById('utilPct').textContent=util.toFixed(1)+'%';
+  document.getElementById('utilBar').style.width=Math.min(util,100)+'%';
+  document.getElementById('cLabel').textContent=`${totL.toFixed(0)} × ${totW.toFixed(0)} mm`;
+  const checks=[
+    {label:'成型長度',ok:lOk,na:totL<=0,msg:`${totL.toFixed(0)} mm`,range:MIN_L>0?`${MIN_L.toLocaleString()}–${MAX_L.toLocaleString()} mm`:`最大 ${MAX_L.toLocaleString()} mm`},
+    {label:'成型寬度',ok:wOk,na:totW<=0,msg:`${totW.toFixed(0)} mm`,range:MIN_W>0?`${MIN_W.toLocaleString()}–${MAX_W.toLocaleString()} mm`:`最大 ${MAX_W.toLocaleString()} mm`},
+    {label:'皮料寬度',ok:SH_MAX>0?(totW>0&&totW<=SH_MAX&&(SH_MIN===0||totW>=SH_MIN)):true,na:totW<=0||SH_MAX===0,msg:`對應皮料 ${totW.toFixed(0)} mm`,range:SH_MIN>0?`${SH_MIN}–${SH_MAX} mm`:`最大 ${SH_MAX} mm`}
   ];
-
-  const checkRow = document.getElementById('checkRow');
-  if (checkRow) {
-    checkRow.innerHTML = checks.map(c => {
-      if (c.na) return `<div class="check-chip na"><span class="ci">⬜</span>${c.label}：尚未計算</div>`;
-      const cls = c.ok ? 'ok' : 'ng';
-      const ico = c.ok ? '✅' : '❌';
-      return `<div class="check-chip ${cls}"><span class="ci">${ico}</span>${c.label}：${c.msg} <span style="opacity:0.6;margin-left:4px;">(${c.range})</span></div>`;
-    }).join('');
-  }
-
-  const anyNG = checks.some(c => !c.na && !c.ok);
-  const badge = document.getElementById('statusBadge');
-  const txt = document.getElementById('statusText');
-  if (anyNG) {
-    badge.className = 'status-badge warn';
-    txt.textContent = `⚠ 模具尺寸超出 ${MACHINES[_activeMachine].name} 可成型範圍`;
-  } else if (totL > 0) {
-    badge.className = 'status-badge ok';
-    txt.textContent = `✓ 尺寸符合 ${MACHINES[_activeMachine].name} 成型範圍`;
-  }
-
-  draw(pL, pW, rows, cols, gap, margin, totL, totW);
+  const cr=document.getElementById('checkRow');
+  if(cr)cr.innerHTML=checks.map(c=>{
+    if(c.na)return`<div class="chip na"><span class="ci">⬜</span>${c.label}：尚未計算</div>`;
+    return`<div class="chip ${c.ok?'ok':'ng'}"><span class="ci">${c.ok?'✅':'❌'}</span>${c.label}：${c.msg} <span style="opacity:.6;margin-left:4px">(${c.range})</span></div>`;
+  }).join('');
+  const anyNG=checks.some(c=>!c.na&&!c.ok);
+  const badge=document.getElementById('statusBadge'),txt=document.getElementById('statusText');
+  if(anyNG){badge.className='sbadge warn';txt.textContent=`⚠ 模具尺寸超出 ${MACHINES[_activeMachine].name} 可成型範圍`}
+  else if(totL>0){badge.className='sbadge ok';txt.textContent=`✓ 尺寸符合 ${MACHINES[_activeMachine].name} 成型範圍`}
+  draw(pL,pW,rows,cols,gap,margin,totL,totW);
 }
-
-function draw(pL, pW, rows, cols, gap, margin, totL, totW) {
-  const canvas = document.getElementById('c');
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  // clientWidth may be 0 before layout; fall back to offsetWidth then parent width
-  const W = canvas.clientWidth || canvas.offsetWidth || canvas.parentElement.clientWidth || 600;
-  const H = Math.round(W * 0.7);
-  // Only resize backing store when dimensions actually change (avoids unnecessary clears)
-  if (canvas.width !== Math.round(W * dpr) || canvas.height !== Math.round(H * dpr)) {
-    canvas.width = Math.round(W * dpr);
-    canvas.height = Math.round(H * dpr);
-  }
-  canvas.style.height = H + 'px';
-  const ctx = canvas.getContext('2d');
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.clearRect(0, 0, W, H);
-
-  if (!totL || !totW) return;
-
-  const pad = 28;
-  const sc = Math.min((W - pad * 2) / totW, (H - pad * 2) / totL);
-  const mW = totW * sc, mH = totL * sc;
-  const ox = (W - mW) / 2, oy = (H - mH) / 2;
-
-  // Mold plate BG
-  ctx.fillStyle = '#f7fafa';
-  ctx.beginPath(); ctx.roundRect(ox, oy, mW, mH, 4); ctx.fill();
-
-  // Margin zone hatch (subtle)
-  ctx.fillStyle = '#f0ebe4';
-  ctx.fillRect(ox, oy, mW, margin * sc);
-  ctx.fillRect(ox, oy + mH - margin * sc, mW, margin * sc);
-  ctx.fillRect(ox, oy, margin * sc, mH);
-  ctx.fillRect(ox + mW - margin * sc, oy, margin * sc, mH);
-
-  // Gap hatching between cavities
-  ctx.fillStyle = '#f5ede5';
-  for (let r = 0; r < rows - 1; r++) {
-    const gy = oy + (margin + (r + 1) * pL + r * gap) * sc;
-    ctx.fillRect(ox + margin * sc, gy, mW - margin * 2 * sc, gap * sc);
-  }
-  for (let c = 0; c < cols - 1; c++) {
-    const gx = ox + (margin + (c + 1) * pW + c * gap) * sc;
-    ctx.fillRect(gx, oy + margin * sc, gap * sc, mH - margin * 2 * sc);
-  }
-
-  // Product cavities
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const x = ox + (margin + c * (pW + gap)) * sc;
-      const y = oy + (margin + r * (pL + gap)) * sc;
-      const cw = pW * sc, ch = pL * sc;
-
-      ctx.fillStyle = 'rgba(10,126,110,0.13)';
-      ctx.beginPath(); ctx.roundRect(x, y, cw, ch, 2); ctx.fill();
-
-      ctx.strokeStyle = '#0a7e6e';
-      ctx.lineWidth = 1.2;
-      ctx.beginPath(); ctx.roundRect(x + 0.6, y + 0.6, cw - 1.2, ch - 1.2, 2); ctx.stroke();
-
-      // Corner ticks
-      const tk = Math.min(5, cw * 0.1, ch * 0.1);
-      ctx.strokeStyle = 'rgba(10,126,110,0.8)';
-      ctx.lineWidth = 1;
-      [[x,y,1,1],[x+cw,y,-1,1],[x,y+ch,1,-1],[x+cw,y+ch,-1,-1]].forEach(([px,py,sx,sy]) => {
-        ctx.beginPath(); ctx.moveTo(px + sx * tk, py); ctx.lineTo(px, py); ctx.lineTo(px, py + sy * tk); ctx.stroke();
-      });
-
-      // Cavity index
-      if (cw > 22 && ch > 14) {
-        ctx.fillStyle = 'rgba(10,126,110,0.55)';
-        ctx.font = `${Math.max(8, Math.min(11, cw * 0.18))}px DM Mono, monospace`;
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(`${r+1}·${c+1}`, x + cw / 2, y + ch / 2);
-      }
+function draw(pL,pW,rows,cols,gap,margin,totL,totW){
+  const cv=document.getElementById('c'),dpr=Math.min(window.devicePixelRatio||1,2);
+  const W=cv.clientWidth||cv.offsetWidth||cv.parentElement.clientWidth||600;
+  const H=Math.round(W*0.68);
+  if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr)}
+  cv.style.height=H+'px';
+  const ctx=cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  if(!totL||!totW)return;
+  const pad=32,sc=Math.min((W-pad*2)/totW,(H-pad*2)/totL);
+  const mW=totW*sc,mH=totL*sc,ox=(W-mW)/2,oy=(H-mH)/2;
+  ctx.fillStyle='#f7fafa';ctx.beginPath();ctx.roundRect(ox,oy,mW,mH,4);ctx.fill();
+  ctx.fillStyle='#f0ebe4';
+  ctx.fillRect(ox,oy,mW,margin*sc);ctx.fillRect(ox,oy+mH-margin*sc,mW,margin*sc);
+  ctx.fillRect(ox,oy,margin*sc,mH);ctx.fillRect(ox+mW-margin*sc,oy,margin*sc,mH);
+  ctx.fillStyle='#f5ede5';
+  for(let r=0;r<rows-1;r++){const gy=oy+(margin+(r+1)*pL+r*gap)*sc;ctx.fillRect(ox+margin*sc,gy,mW-margin*2*sc,gap*sc)}
+  for(let c=0;c<cols-1;c++){const gx=ox+(margin+(c+1)*pW+c*gap)*sc;ctx.fillRect(gx,oy+margin*sc,gap*sc,mH-margin*2*sc)}
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      const x=ox+(margin+c*(pW+gap))*sc,y=oy+(margin+r*(pL+gap))*sc,cw=pW*sc,ch=pL*sc;
+      ctx.fillStyle='rgba(10,126,110,0.13)';ctx.beginPath();ctx.roundRect(x,y,cw,ch,2);ctx.fill();
+      ctx.strokeStyle='#0a7e6e';ctx.lineWidth=1.2;ctx.beginPath();ctx.roundRect(x+.6,y+.6,cw-1.2,ch-1.2,2);ctx.stroke();
+      const tk=Math.min(5,cw*.1,ch*.1);ctx.strokeStyle='rgba(10,126,110,0.8)';ctx.lineWidth=1;
+      [[x,y,1,1],[x+cw,y,-1,1],[x,y+ch,1,-1],[x+cw,y+ch,-1,-1]].forEach(([px,py,sx,sy])=>{ctx.beginPath();ctx.moveTo(px+sx*tk,py);ctx.lineTo(px,py);ctx.lineTo(px,py+sy*tk);ctx.stroke()});
+      if(cw>22&&ch>14){ctx.fillStyle='rgba(10,126,110,0.55)';ctx.font=`${Math.max(8,Math.min(11,cw*.18))}px DM Mono,monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(`${r+1}·${c+1}`,x+cw/2,y+ch/2)}
     }
   }
-
-  // Outer border
-  ctx.strokeStyle = '#c0cdd0';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.roundRect(ox, oy, mW, mH, 4); ctx.stroke();
-
-  // Dimension lines
-  // Canvas: horizontal = W (寬), vertical = L (長)
-  ctx.fillStyle = '#8a9da5';
-  ctx.font = '9px DM Mono, monospace';
-  // Bottom: horizontal axis → 寬 (totW)
-  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-  ctx.fillText(`W ${totW.toFixed(0)} mm`, ox + mW / 2, oy + mH + 5);
-  // Left side: vertical axis → 長 (totL)
-  ctx.save();
-  ctx.translate(ox - 6, oy + mH / 2);
-  ctx.rotate(-Math.PI / 2);
-  ctx.textBaseline = 'bottom';
-  ctx.fillText(`L ${totL.toFixed(0)} mm`, 0, 0);
-  ctx.restore();
+  ctx.strokeStyle='#c0cdd0';ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(ox,oy,mW,mH,4);ctx.stroke();
+  ctx.fillStyle='#8a9da5';ctx.font='10px DM Mono,monospace';
+  ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText(`W ${totW.toFixed(0)} mm`,ox+mW/2,oy+mH+6);
+  ctx.save();ctx.translate(ox-8,oy+mH/2);ctx.rotate(-Math.PI/2);ctx.textBaseline='bottom';ctx.fillText(`L ${totL.toFixed(0)} mm`,0,0);ctx.restore();
 }
-
-// ── Machine database ──
-const MACHINES = {
-  asano: {
-    name: 'ASANO 壓空真空成型機',
-    maxL: 1100, minL: 600,
-    maxW: 1000, minW: 560,
-    sheetMaxW: 1040, sheetMinW: 590,
-    depth: '上凸 150 mm ／ 下凸 150 mm',
-    specRows: [
-      ['機型', 'ASANO 壓空真空成型機'],
-      ['成型面 最大', '<span class="spec-val">1,000</span> (寬) × <span class="spec-val">1,100</span> (長) mm'],
-      ['成型面 最小', '<span class="spec-val">560</span> (寬) × <span class="spec-val">600</span> (長) mm'],
-      ['成形深度', '上凸 <span class="spec-val">150</span> mm ／ 下凸 <span class="spec-val">150</span> mm'],
-      ['皮料寬度 最大', '<span class="spec-val">1,040</span> mm'],
-      ['皮料寬度 最小', '<span class="spec-val">590</span> mm'],
-    ]
-  },
-  shuangxing: {
-    name: '雙星密封式真空成型機',
-    maxL: 1200, minL: 0,
-    maxW: 670,  minW: 0,
-    sheetMaxW: 670, sheetMinW: 0,
-    depth: '—',
-    specRows: [
-      ['機型', '雙星密封式真空成型機'],
-      ['成型尺寸 最大', '<span class="spec-val">670</span> (寬) × <span class="spec-val">1,200</span> (長) mm'],
-    ]
-  }
+const MACHINES={
+  asano:{name:'ASANO 壓空真空成型機',maxL:1100,minL:600,maxW:1000,minW:560,sheetMaxW:1040,sheetMinW:590,
+    specRows:[['機型','ASANO 壓空真空成型機'],['成型面 最大','<span class="sv">1,000</span> (寬) × <span class="sv">1,100</span> (長) mm'],['成型面 最小','<span class="sv">560</span> (寬) × <span class="sv">600</span> (長) mm'],['成形深度','上凸 <span class="sv">150</span> mm ／ 下凸 <span class="sv">150</span> mm'],['皮料寬度 最大','<span class="sv">1,040</span> mm'],['皮料寬度 最小','<span class="sv">590</span> mm']]},
+  shuangxing:{name:'雙星密封式真空成型機',maxL:1200,minL:0,maxW:670,minW:0,sheetMaxW:670,sheetMinW:0,
+    specRows:[['機型','雙星密封式真空成型機'],['成型尺寸 最大','<span class="sv">670</span> (寬) × <span class="sv">1,200</span> (長) mm']]}
 };
-
-let _activeMachine = 'asano';
-
-function selectMachine(id) {
-  _activeMachine = id;
-  // Update tabs
-  document.querySelectorAll('.machine-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab' + id.charAt(0).toUpperCase() + id.slice(1)).classList.add('active');
-  // Update spec panel title
-  document.getElementById('specPanelTitle').textContent = '📋 ' + MACHINES[id].name + ' 規格表';
-  // Rebuild spec table
-  const m = MACHINES[id];
-  document.getElementById('specBody').innerHTML =
-    '<table class="spec-table">' +
-    m.specRows.map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('') +
-    '</table>';
-  // Rebuild preset buttons
-  const pr = document.getElementById('presetRow');
-  if (id === 'asano') {
-    pr.innerHTML = `
-      <button class="preset-btn" id="presetMax" onclick="applyPreset('max')">
-        <strong>最大成型面</strong>W 1,000 × L 1,100
-      </button>
-      <button class="preset-btn" id="presetMin" onclick="applyPreset('min')">
-        <strong>最小成型面</strong>W 560 × L 600
-      </button>`;
-  } else {
-    pr.innerHTML = `
-      <button class="preset-btn" id="presetMax" onclick="applyPreset('max')">
-        <strong>最大成型面</strong>W 670 × L 1,200
-      </button>`;
-  }
-  // Update result card subtitle
-  const rs = document.getElementById('resultCardSub');
-  if (rs) rs.textContent = '依 ' + m.name + ' 規格自動驗證';
-  // Auto-apply max preset and recalc
+let _activeMachine='asano';
+function selectMachine(id){
+  _activeMachine=id;
+  document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('tab'+id.charAt(0).toUpperCase()+id.slice(1)).classList.add('on');
+  document.getElementById('specPanelTitle').textContent='📋 '+MACHINES[id].name+' 規格表';
+  const m=MACHINES[id];
+  document.getElementById('specBody').innerHTML='<table class="stbl">'+m.specRows.map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('')+'</table>';
+  const pr=document.getElementById('presetRow');
+  if(id==='asano'){pr.innerHTML=`<button class="pbtn on" id="presetMax" onclick="applyPreset('max')"><strong>最大成型面</strong>W 1,000 × L 1,100</button><button class="pbtn" id="presetMin" onclick="applyPreset('min')"><strong>最小成型面</strong>W 560 × L 600</button>`}
+  else{pr.innerHTML=`<button class="pbtn on" id="presetMax" onclick="applyPreset('max')"><strong>最大成型面</strong>W 670 × L 1,200</button>`}
+  const rs=document.getElementById('resultCardSub');if(rs)rs.textContent='依 '+m.name+' 規格自動驗證';
   applyPreset('max');
 }
-
-function toggleSpec() {
-  const body = document.getElementById('specBody');
-  const arrow = document.getElementById('specArrow');
-  body.classList.toggle('open');
-  arrow.classList.toggle('open');
-}
-
-function applyPreset(type) {
-  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-  const m = MACHINES[_activeMachine];
-  if (type === 'max') {
-    document.getElementById('maxL').value = m.maxL;
-    document.getElementById('maxW').value = m.maxW;
-    const btn = document.getElementById('presetMax');
-    if (btn) btn.classList.add('active');
-  } else {
-    document.getElementById('maxL').value = m.minL;
-    document.getElementById('maxW').value = m.minW;
-    const btn = document.getElementById('presetMin');
-    if (btn) btn.classList.add('active');
-  }
+function toggleSpec(){document.getElementById('specBody').classList.toggle('on');document.getElementById('specArrow').classList.toggle('on')}
+function applyPreset(type){
+  document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('on'));
+  const m=MACHINES[_activeMachine];
+  if(type==='max'){document.getElementById('maxL').value=m.maxL;document.getElementById('maxW').value=m.maxW;const b=document.getElementById('presetMax');if(b)b.classList.add('on')}
+  else{document.getElementById('maxL').value=m.minL;document.getElementById('maxW').value=m.minW;const b=document.getElementById('presetMin');if(b)b.classList.add('on')}
   calc();
 }
-
-function clearPreset() {
-  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+function clearPreset(){document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('on'))}
+function reset(){
+  Object.entries(DEFAULTS).forEach(([k,val])=>{const el=document.getElementById(k);if(el)el.value=val});
+  clearPreset();_source='formula';_dirty=false;_cavityLocked=false;
+  _marginLocked=false;updateMarginUI();_gapLocked=false;updateGapUI();
+  _calcMode='cavity';setMode('cavity');setCavityUI(false);
+  const ch=document.getElementById('clampHint');if(ch)ch.style.display='none';
+  _activeMachine='asano';selectMachine('asano');
 }
-
-function reset() {
-  Object.entries(DEFAULTS).forEach(([k, val]) => {
-    const el = document.getElementById(k);
-    if (el) el.value = val;
-  });
-  clearPreset();
-  _source = 'formula';
-  _dirty = false;
-  _cavityLocked = false;
-  _marginLocked = false;
-  updateMarginUI();
-  _gapLocked = false;
-  updateGapUI();
-  _calcMode = 'cavity';
-  setMode('cavity');
-  setCavityUI(false);
-  const ch = document.getElementById('clampHint');
-  if (ch) ch.style.display = 'none';
-  calc();
-}
-
-window.addEventListener('resize', calc);
-requestAnimationFrame(() => requestAnimationFrame(() => {
-  selectMachine('asano'); // build spec table + presets on load
-}));
+window.addEventListener('resize',calc);
+requestAnimationFrame(()=>requestAnimationFrame(()=>selectMachine('asano')));
 </script>
 </body>
 </html>
